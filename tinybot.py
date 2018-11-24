@@ -12,7 +12,7 @@ import pinylib
 from apis import youtube, other, locals_
 from modules import register, welcome, spam, tokes, voting
 from page import privacy
-from util import tracklist, botdb
+from util import tracklist, botdb, scheduler
 
 __version__ = '2.4.5'
 
@@ -37,6 +37,7 @@ class TinychatBot(pinylib.TinychatRTCClient):
 
     privacy_ = None
     timer_thread = None
+    scheduler = scheduler.Scheduler()
 
     playlist = tracklist.PlayList()
 
@@ -547,6 +548,8 @@ class TinychatBot(pinylib.TinychatRTCClient):
                     threading.Thread(target=self.do_make_mod, args=(cmd_arg,)).start()
                 elif cmd == prefix + '-mod':
                     threading.Thread(target=self.do_remove_mod, args=(cmd_arg,)).start()
+                elif cmd == prefix + 'repeatmsg':
+                    self.set_repeating_message(cmd_arg)
 
         # == Moderator level users ==
 
@@ -823,6 +826,18 @@ class TinychatBot(pinylib.TinychatRTCClient):
             self.cmd_handler(private_msg)
 
         self.console_write(pinylib.COLOR['white'], '[PRIMSG] %s: %s' % (self.active_user.nick, private_msg))
+
+    def set_repeating_message(self, cmd):
+        '''
+        Sets a message that will be written to the chat periodically.
+        Replaces any existing message.
+        '''
+        period, _, message = cmd.partition(' ')
+        self.repeat_message = message
+        self.scheduler.add(scheduler.Event(period, self.show_repeating_message))
+
+    def show_repeating_message(self):
+        self.send_chat_msg(self.repeat_message)
 
     # Youtube (Nortxort)
 
