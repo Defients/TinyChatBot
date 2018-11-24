@@ -520,7 +520,7 @@ class TinychatBot(pinylib.TinychatRTCClient):
             elif cmd == prefix + 'lurkers':
                 self.do_lurkers()
 
-            elif cmd == prefix == 'kb':
+            elif cmd == prefix + 'kb':
                 self.do_kick_as_ban(0)
 
             if cmd == prefix + 'lockdown':
