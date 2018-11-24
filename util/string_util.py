@@ -54,7 +54,7 @@ def convert_to_seconds(duration):
     :param duration: The ISO 8601 unicode duration str
     :return:  int seconds
     """
-    duration_string = duration.replace('PT', '').upper()
+    duration_string = duration.upper().replace('PT', '')
     seconds = 0
     number_string = ''
 
